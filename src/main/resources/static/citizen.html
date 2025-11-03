@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Portal - ZeroMonos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="#2ecc71"/>
+                    <path d="M15 25 L22 32 L35 18" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>ZeroMonos</h1>
+            </div>
+            <nav>
+                <a href="citizen.html" class="nav-btn active">Citizen Portal</a>
+                <a href="staff.html" class="nav-btn">Staff Dashboard</a>
+                <a href="check.html" class="nav-btn">Check Booking</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="citizen-view" class="view active">
+                <div class="hero">
+                    <h2>Request Bulky Waste Collection</h2>
+                    <p>Schedule collection of large items at your convenience</p>
+                </div>
+
+                <div class="form-container">
+                    <form id="booking-form">
+                        <div class="form-group">
+                            <label for="municipality">Municipality *</label>
+                            <select id="municipality" required>
+                                <option value="">Select your municipality</option>
+                            </select>
+                            <small class="form-hint">Select from available service areas</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="collection-date">Collection Date *</label>
+                                <input type="date" id="collection-date" required>
+                                <small class="form-hint">Weekdays only (Mon-Fri)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="time-slot">Time Slot *</label>
+                                <select id="time-slot" required>
+                                    <option value="">Select time slot</option>
+                                    <option value="08:00">08:00 - Morning</option>
+                                    <option value="10:00">10:00 - Mid-Morning</option>
+                                    <option value="12:00">12:00 - Noon</option>
+                                    <option value="14:00">14:00 - Afternoon</option>
+                                    <option value="16:00">16:00 - Late Afternoon</option>
+                                </select>
+                                <small class="form-hint">Between 8:00 AM and 6:00 PM</small>
+                            </div>
+                        </div>
+
+                        <div class="items-section">
+                            <div class="section-header">
+                                <h3>Items to Collect</h3>
+                                <button type="button" id="add-item-btn" class="btn-secondary">+ Add Item</button>
+                            </div>
+                            <div id="items-container">
+                                <div class="item-entry">
+                                    <div class="form-group">
+                                        <label>Item Name *</label>
+                                        <input type="text" class="item-name" placeholder="e.g., Old Mattress" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description *</label>
+                                        <input type="text" class="item-description" placeholder="e.g., Queen size, blue color" required>
+                                    </div>
+                                    <button type="button" class="btn-remove" disabled>Remove</button>
+                                </div>
+                            </div>
+                            <small class="form-hint">Maximum 10 items per booking</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Request Collection</button>
+                            <button type="reset" class="btn-secondary">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="booking-result" class="result-modal hidden">
+                    <div class="modal-content">
+                        <div class="success-icon">
+                            <svg width="80" height="80" viewBox="0 0 80 80">
+                                <circle cx="40" cy="40" r="35" fill="#2ecc71"/>
+                                <path d="M25 40 L35 50 L55 28" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3>Booking Confirmed!</h3>
+                        <p>Your collection has been scheduled successfully.</p>
+                        <div class="token-display">
+                            <label>Your Booking Token:</label>
+                            <div class="token-value">
+                                <span id="booking-token"></span>
+                                <button class="btn-copy" onclick="copyToken()">Copy</button>
+                            </div>
+                        </div>
+                        <p class="token-hint">Save this token to check your booking status later</p>
+                        <button class="btn-primary" onclick="closeModal()">Close</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ZeroMonos</h4>
+                    <p>Waste collection services for a cleaner tomorrow</p>
+                </div>
+                <div class="footer-section">
+                    <h4>API Info</h4>
+                    <p>Backend: Spring Boot REST API</p>
+                    <p>Endpoint: <code>/api</code></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Real-time booking</li>
+                        <li>Status tracking</li>
+                        <li>Staff management</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ZeroMonos. TQS Project - University of Aveiro</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js?v=2.0"></script>
+</body>
+</html>

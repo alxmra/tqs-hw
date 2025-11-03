@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Booking - ZeroMonos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="#2ecc71"/>
+                    <path d="M15 25 L22 32 L35 18" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>ZeroMonos</h1>
+            </div>
+            <nav>
+                <a href="citizen.html" class="nav-btn">Citizen Portal</a>
+                <a href="staff.html" class="nav-btn">Staff Dashboard</a>
+                <a href="check.html" class="nav-btn active">Check Booking</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="check-view" class="view active">
+                <div class="hero">
+                    <h2>Check Your Booking</h2>
+                    <p>Track the status of your collection request</p>
+                </div>
+
+                <div class="check-container">
+                    <div class="form-container">
+                        <form id="check-form">
+                            <div class="form-group">
+                                <label for="check-token">Booking Token *</label>
+                                <input type="text" id="check-token" placeholder="Enter your booking token" required>
+                                <small class="form-hint">The token provided when you created the booking</small>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Check Status</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="booking-details" class="booking-details hidden">
+                        <div class="details-card">
+                            <h3>Booking Details</h3>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Token:</span>
+                                <span class="detail-value" id="detail-token"></span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Municipality:</span>
+                                <span class="detail-value" id="detail-municipality"></span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Collection Date:</span>
+                                <span class="detail-value" id="detail-date"></span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Time Slot:</span>
+                                <span class="detail-value" id="detail-time"></span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Current Status:</span>
+                                <span class="detail-value status-badge" id="detail-state"></span>
+                            </div>
+
+                            <div class="items-list">
+                                <h4>Items for Collection:</h4>
+                                <div id="detail-items"></div>
+                            </div>
+
+                            <div class="state-history">
+                                <h4>Status History:</h4>
+                                <div id="detail-history"></div>
+                            </div>
+
+                            <div class="detail-actions">
+                                <button class="btn-danger" onclick="cancelBooking()">Cancel Booking</button>
+                                <button class="btn-secondary" onclick="clearBookingDetails()">Check Another</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ZeroMonos</h4>
+                    <p>Waste collection services for a cleaner tomorrow</p>
+                </div>
+                <div class="footer-section">
+                    <h4>API Info</h4>
+                    <p>Backend: Spring Boot REST API</p>
+                    <p>Endpoint: <code>/api</code></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Real-time booking</li>
+                        <li>Status tracking</li>
+                        <li>Staff management</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ZeroMonos. TQS Project - University of Aveiro</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

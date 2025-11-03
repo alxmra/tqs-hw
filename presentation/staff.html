@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - ZeroMonos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="#2ecc71"/>
+                    <path d="M15 25 L22 32 L35 18" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>ZeroMonos</h1>
+            </div>
+            <nav>
+                <a href="citizen.html" class="nav-btn">Citizen Portal</a>
+                <a href="staff.html" class="nav-btn active">Staff Dashboard</a>
+                <a href="check.html" class="nav-btn">Check Booking</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="staff-view" class="view active">
+                <div class="hero">
+                    <h2>Staff Dashboard</h2>
+                    <p>Manage and monitor collection requests</p>
+                </div>
+
+                <div class="dashboard-controls">
+                    <div class="filter-group">
+                        <label for="filter-municipality">Filter by Municipality:</label>
+                        <select id="filter-municipality">
+                            <option value="">All Municipalities</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-state">Filter by State:</label>
+                        <select id="filter-state">
+                            <option value="">All States</option>
+                            <option value="RECEIVED">Received</option>
+                            <option value="ASSIGNED">Assigned</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="FINISHED">Finished</option>
+                            <option value="CANCELLED">Cancelled</option>
+                            <option value="REMOVED">Removed</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-primary" onclick="loadBookings()">Refresh</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-bookings">0</div>
+                        <div class="stat-label">Total Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="received-count">0</div>
+                        <div class="stat-label">Received</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="in-progress-count">0</div>
+                        <div class="stat-label">In Progress</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="finished-count">0</div>
+                        <div class="stat-label">Finished</div>
+                    </div>
+                </div>
+
+                <div class="bookings-table">
+                    <table id="bookings-list">
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Municipality</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Items</th>
+                                <th>State</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-tbody">
+                            <tr class="loading-row">
+                                <td colspan="7">Loading bookings...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="state-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>Update Booking State</h3>
+                        <p>Token: <strong id="modal-token"></strong></p>
+                        <p>Current State: <strong id="modal-current-state"></strong></p>
+                        <div class="form-group">
+                            <label for="new-state">New State:</label>
+                            <select id="new-state">
+                                <option value="RECEIVED">Received</option>
+                                <option value="ASSIGNED">Assigned</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="FINISHED">Finished</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="btn-primary" onclick="updateBookingState()">Update</button>
+                            <button class="btn-secondary" onclick="closeStateModal()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ZeroMonos</h4>
+                    <p>Waste collection services for a cleaner tomorrow</p>
+                </div>
+                <div class="footer-section">
+                    <h4>API Info</h4>
+                    <p>Backend: Spring Boot REST API</p>
+                    <p>Endpoint: <code>/api</code></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Real-time booking</li>
+                        <li>Status tracking</li>
+                        <li>Staff management</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ZeroMonos. TQS Project - University of Aveiro</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

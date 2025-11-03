@@ -1,0 +1,12 @@
+{
+  "name": "hw1-performance-tests",
+  "version": "1.0.0",
+  "description": "Lighthouse performance testing for ZeroMonos",
+  "scripts": {
+    "lighthouse": "node lighthouse-test.js"
+  },
+  "devDependencies": {
+    "lighthouse": "^11.0.0",
+    "chrome-launcher": "^1.0.0"
+  }
+}
