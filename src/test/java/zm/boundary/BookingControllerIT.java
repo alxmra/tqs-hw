@@ -351,6 +351,266 @@ class BookingControllerIT {
             .andExpect(status().isNotFound());
     }
 
+    @Test
+    void testBookWithNullDate() throws Exception {
+        BookingRequest request = new BookingRequest(
+            null,
+            LocalTime.of(10, 0),
+            items,
+            "Aveiro"
+        );
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+
+        verify(bookingService, never()).book(any(), any(), any(), any());
+    }
+
+    @Test
+    void testBookWithNullTimeSlot() throws Exception {
+        BookingRequest request = new BookingRequest(
+            LocalDate.now().plusDays(5),
+            null,
+            items,
+            "Aveiro"
+        );
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+
+        verify(bookingService, never()).book(any(), any(), any(), any());
+    }
+
+    @Test
+    void testBookWithEmptyMunicipality() throws Exception {
+        BookingRequest request = new BookingRequest(
+            LocalDate.now().plusDays(5),
+            LocalTime.of(10, 0),
+            items,
+            "   "
+        );
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+
+        verify(bookingService, never()).book(any(), any(), any(), any());
+    }
+
+    @Test
+    void testBookWithNullItems() throws Exception {
+        BookingRequest request = new BookingRequest(
+            LocalDate.now().plusDays(5),
+            LocalTime.of(10, 0),
+            null,
+            "Aveiro"
+        );
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+
+        verify(bookingService, never()).book(any(), any(), any(), any());
+    }
+
+    @Test
+    void testBookWithEmptyToken() throws Exception {
+        BookingRequest request = new BookingRequest(
+            LocalDate.now().plusDays(5),
+            LocalTime.of(10, 0),
+            items,
+            "Aveiro"
+        );
+
+        when(bookingService.book(any(LocalDate.class), any(LocalTime.class), anyList(), anyString()))
+            .thenReturn("");
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testBookWithNullTokenReturned() throws Exception {
+        BookingRequest request = new BookingRequest(
+            LocalDate.now().plusDays(5),
+            LocalTime.of(10, 0),
+            items,
+            "Aveiro"
+        );
+
+        when(bookingService.book(any(LocalDate.class), any(LocalTime.class), anyList(), anyString()))
+            .thenReturn(null);
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testBookWithUnexpectedException() throws Exception {
+        BookingRequest request = new BookingRequest(
+            LocalDate.now().plusDays(5),
+            LocalTime.of(10, 0),
+            items,
+            "Aveiro"
+        );
+
+        when(bookingService.book(any(LocalDate.class), any(LocalTime.class), anyList(), anyString()))
+            .thenThrow(new RuntimeException("Unexpected error"));
+
+        mockMvc.perform(post("/api/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testCheckBookingWithEmptyToken() throws Exception {
+        mockMvc.perform(get("/api/bookings/   "))
+            .andExpect(status().isNotFound());
+
+        verify(bookingService, never()).check(any());
+    }
+
+    @Test
+    void testCheckBookingWithException() throws Exception {
+        when(bookingService.check("TOKEN456")).thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(get("/api/bookings/TOKEN456"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testCancelWithWhitespaceToken() throws Exception {
+        mockMvc.perform(delete("/api/bookings/   "))
+            .andExpect(status().isNotFound());
+
+        verify(bookingService, never()).cancel(any());
+    }
+
+    @Test
+    void testCancelWithException() throws Exception {
+        when(bookingService.cancel("TOKEN123")).thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(delete("/api/bookings/TOKEN123"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testModifyStateWithWhitespaceToken() throws Exception {
+        mockMvc.perform(patch("/api/bookings/   /state"))
+            .andExpect(status().isNotFound());
+
+        verify(bookingService, never()).changeState(any(), any());
+    }
+
+    @Test
+    void testModifyStateWithRequestBody() throws Exception {
+        StateUpdateRequest stateRequest = new StateUpdateRequest(State.FINISHED);
+        when(bookingService.changeState(eq("TOKEN789"), eq(State.FINISHED))).thenReturn(true);
+
+        mockMvc.perform(patch("/api/bookings/TOKEN789/state")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(stateRequest)))
+            .andExpect(status().isNoContent());
+
+        verify(bookingService).changeState(eq("TOKEN789"), eq(State.FINISHED));
+    }
+
+    @Test
+    void testModifyStateWithException() throws Exception {
+        when(bookingService.changeState(eq("TOKEN789"), any(State.class)))
+            .thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(patch("/api/bookings/TOKEN789/state"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testModifyWithoutToken() throws Exception {
+        mockMvc.perform(patch("/api/bookings/state"))
+            .andExpect(status().isNotFound());
+
+        verify(bookingService, never()).changeState(any(), any());
+    }
+
+    @Test
+    void testGetAllBookingsWithException() throws Exception {
+        when(bookingService.getAllBookings()).thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(get("/api/staff/bookings"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testGetBookingsByStateInvalidState() throws Exception {
+        mockMvc.perform(get("/api/bookings/state/INVALID_STATE"))
+            .andExpect(status().isBadRequest());
+
+        verify(bookingService, never()).getBookingsByState(any());
+    }
+
+    @Test
+    void testGetBookingsByStateWithException() throws Exception {
+        when(bookingService.getBookingsByState(State.ASSIGNED))
+            .thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(get("/api/bookings/state/ASSIGNED"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testGetBookingsByMunicipalityWithException() throws Exception {
+        when(bookingService.getBookingsByMunicipality("Aveiro"))
+            .thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(get("/api/municipalities/Aveiro"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testGetMunicipalities() throws Exception {
+        List<String> municipalities = Arrays.asList("Aveiro", "Porto", "Lisboa");
+        when(municipalityProvider.getMunicipalities()).thenReturn(municipalities);
+
+        mockMvc.perform(get("/api/municipalities"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$", hasSize(3)))
+            .andExpect(jsonPath("$[0]").value("Aveiro"));
+
+        verify(municipalityProvider).getMunicipalities();
+    }
+
+    @Test
+    void testGetMunicipalitiesWithException() throws Exception {
+        when(municipalityProvider.getMunicipalities())
+            .thenThrow(new RuntimeException("Service unavailable"));
+
+        mockMvc.perform(get("/api/municipalities"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    static class StateUpdateRequest {
+        public State state;
+
+        @SuppressWarnings("unused")
+        public StateUpdateRequest() {}
+
+        public StateUpdateRequest(State state) {
+            this.state = state;
+        }
+    }
+
     static class BookingRequest {
         public LocalDate date;
         public LocalTime approxTimeSlot;
