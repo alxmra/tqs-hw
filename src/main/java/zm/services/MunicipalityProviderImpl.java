@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class MunicipalityProviderImpl implements MunicipalityProvider {
     private static final Logger logger = LoggerFactory.getLogger(MunicipalityProviderImpl.class);
-    private static final String apiUrl = "https://gist.githubusercontent.com/alxmra/f6ddfdcefcbbb2112704fff57ba2baf0/raw/9632d6ade1e08d857a3395854c268dd3f9e96f6b/municipalities.json";
+    private static final String API_URL = "https://gist.githubusercontent.com/alxmra/f6ddfdcefcbbb2112704fff57ba2baf0/raw/9632d6ade1e08d857a3395854c268dd3f9e96f6b/municipalities.json";
     private final List<String> municipalities = fetchMunicipalities();
 
     public List<String> getMunicipalities() {
@@ -35,7 +35,7 @@ public class MunicipalityProviderImpl implements MunicipalityProvider {
     private List<String> fetchMunicipalities() {
         try (HttpClient client = HttpClient.newHttpClient()){
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl))
+                    .uri(URI.create(API_URL))
                     .build();
 
             HttpResponse<String> response = client.send(
