@@ -42,6 +42,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=alxmra_tqs-hw
+            -Dsonar.organization=alxmra
             -Dsonar.sources=src/main
             -Dsonar.tests=src/test
             -Dsonar.java.binaries=target/classes
